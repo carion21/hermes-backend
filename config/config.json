@@ -15,9 +15,9 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
+    "username": "qhmyrewe_hermes_core",
+    "password": "4(4t$_a1#F_410x2_t",
+    "database": "qhmyrewe_hermes_core",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }
