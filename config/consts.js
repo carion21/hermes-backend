@@ -148,9 +148,9 @@ class Consts {
     }
 
     static REQUEST_TYPES_LABELS_FR = {
-        [Consts.REQUEST_TYPE_STEP_1]: "Etape 1",
-        [Consts.REQUEST_TYPE_STEP_2]: "Etape 2",
-        [Consts.REQUEST_TYPE_STEP_3]: "Etape 3"
+        [Consts.REQUEST_TYPE_STEP_1]: "Phase 1",
+        [Consts.REQUEST_TYPE_STEP_2]: "Phase 2",
+        [Consts.REQUEST_TYPE_STEP_3]: "Phase 3"
     }
 
     static REQUEST_TYPES_LABELS = Consts.REQUEST_TYPES_LABELS_FR;

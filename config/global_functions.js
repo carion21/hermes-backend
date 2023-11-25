@@ -416,14 +416,42 @@ const get_stage_data = ((stage) => {
   }
 })
 
+const get_request_type_data = ((request_type) => {
+  return {
+    id: request_type.id,
+    code: request_type.code,
+    label: request_type.label,
+    description: request_type.description,
+    is_active: request_type.enable == 1 ? true : false,
+    created_at: moment(request_type.createdAt).format("YYYY-MM-DD HH:mm:ss")
+  }
+})
+
 const get_request_data = (async (request) => {
   let request_data ={
     id: request.id,
-    main_stage_id: request.main_stage_id,
     code: request.code,
     subject: request.subject,
     description: request.description
   }
+  let stage = await hms.Stage.findOne({
+    where: {
+      id: request.main_stage_id
+    }
+  })
+  request_data.main_stage = get_stage_data(stage)
+  let request_type = await hms.RequestType.findOne({
+    where: {
+      id: request.requesttype_id
+    }
+  })
+  request_data.request_type = get_request_type_data(request_type)
+  let client = await hms.User.findOne({
+    where: {
+      id: request.client_id
+    }
+  })
+  request_data.client = get_user_data(client)
   let request_evolutions = await hms.RequestEvolution.findAll({
     where: {
       request_id: request.id
@@ -432,23 +460,28 @@ const get_request_data = (async (request) => {
       ['id', 'DESC']
     ]
   })
-  request_data.actual_evolution = get_request_evolution_data(request_evolutions[0])
-  request_data.evolution_list = request_evolutions.map(request_evolution => get_request_evolution_data(request_evolution))
+  request_data.actual_evolution = await get_request_evolution_data(request_evolutions[0])
+  request_data.evolution_list = await Promise.all(request_evolutions.map(async (request_evolution) => get_request_evolution_data(request_evolution)))
   request_data.is_active = request.enable == 1 ? true : false
   request_data.created_at = moment(request.createdAt).format("YYYY-MM-DD HH:mm:ss")
   return request_data
 })
 
-const get_request_evolution_data = ((request_evolution) => {
-  return {
+const get_request_evolution_data = (async (request_evolution) => {
+  let evolution_data = {
     id: request_evolution.id,
-    request_id: request_evolution.request_id,
     status_id: request_evolution.status_id,
-    status_label: REQUEST_STATUSES_LABELS[request_evolution.status_id.toString()],
-    operator_id: request_evolution.operator_id,
-    is_active: request_evolution.enable == 1 ? true : false,
-    created_at: moment(request_evolution.createdAt).format("YYYY-MM-DD HH:mm:ss")
+    status_label: REQUEST_STATUSES_LABELS[request_evolution.status_id.toString()]
   }
+  let operator = await hms.User.findOne({
+    where: {
+      id: request_evolution.operator_id
+    }
+  })
+  evolution_data.operator = get_user_data(operator)
+  evolution_data.is_active = request_evolution.enable == 1 ? true : false
+  evolution_data.created_at = moment(request_evolution.createdAt).format("YYYY-MM-DD HH:mm:ss")
+  return evolution_data
 })
 
 const get_message_data = ((message) => {

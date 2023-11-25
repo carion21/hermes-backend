@@ -15,7 +15,7 @@ router.use('/', index)
 router.use('/sign_in', sign_in)
 router.use('/sign_out', sign_out)
 
-// router.use('/init_system', init_system)
+router.use('/init_system', init_system)
 
 
 module.exports = router;
